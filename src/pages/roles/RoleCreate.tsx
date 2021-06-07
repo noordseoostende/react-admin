@@ -82,6 +82,6 @@ const RoleCreate = () => {
 
 export default RoleCreate;
 
-function predicate(predicate: any, arg1: (s: any) => boolean): React.SetStateAction<number[]> {
-    throw new Error('Function not implemented.');
-}
+//function predicate(predicate: any, arg1: (s: any) => boolean): React.SetStateAction<number[]> {
+//    throw new Error('Function not implemented.');
+//}

@@ -4,7 +4,7 @@ import Wrapper from '../../components/Wrapper';
 import {Permission} from "../../components/models/permission";
 import {Redirect} from "react-router-dom";
 
-const RoleCreate = () => {
+const RoleEdit = (props: any) => {
     const [permissions, setPermissions] = useState([]);
     const [selected, setSelected] = useState([] as number[]);
     const [name, setName] = useState('');
@@ -13,9 +13,14 @@ const RoleCreate = () => {
     useEffect(() => {
         (
             async () => {
-                const {data} = await axios.get('permissions');
+                const response = await axios.get('permissions');
 
-                setPermissions(data);
+                setPermissions(response.data);
+
+                const {data} = await axios.get(`roles/${props.match.params.id}`);
+
+                setName(data.name);
+                setSelected(data.permissions((p: Permission) => p.id));
             }
         )();
     }, []);
@@ -32,7 +37,7 @@ const RoleCreate = () => {
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        await axios.post('roles', {
+        await axios.put(`roles/${props.match.params.id}`, {
            name,
             permissions: selected
         });
@@ -50,7 +55,9 @@ const RoleCreate = () => {
                     <label className="cos-sm-2 col-form-label">Name</label>
                     <div className="col-sm-10">
 
-                        <input className="form-control" onChange={e => setName(e.target.value)}/>
+                        <input className="form-control"
+                               defaultValue={name}
+                               onChange={e => setName(e.target.value)}/>
                     </div>
                 </div>
 
@@ -62,6 +69,7 @@ const RoleCreate = () => {
                         <div className="form-check form-check-inline col-3" key={p.id}>
                         <input className="form-check-input" type="checkbox"
                                value={p.id}
+                               checked={selected.some(s => s === p.id)}
                                onChange={() => check(p.id)}
                         />
                             <label className="form-check-label"
@@ -80,8 +88,8 @@ const RoleCreate = () => {
     );
 };
 
-export default RoleCreate;
+export default RoleEdit;
 
-function predicate(predicate: any, arg1: (s: any) => boolean): React.SetStateAction<number[]> {
-    throw new Error('Function not implemented.');
-}
+//function predicate(predicate: any, arg1: (s: any) => boolean): React.SetStateAction<number[]> {
+//    throw new Error('Function not implemented.');
+//}
